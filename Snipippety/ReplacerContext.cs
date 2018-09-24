@@ -31,7 +31,7 @@ namespace Snipippety
                 throw new IOException($"Could not find snippet file {fileName} in {_directory}");
             }
 
-            var snippets = new ConcurrentDictionary<string,string[]>();
+            var snippets = new ConcurrentDictionary<string, string[]>();
             var readingSnippet = false;
             var snippetName = "";
             var currentSnippet = new List<string>();
@@ -56,7 +56,7 @@ namespace Snipippety
 
                     if (snippets.TryGetValue(snippetName, out var previouslyDefinedSnippetWithThatName))
                     {
-                        throw  new ArgumentException($@"The line
+                        throw new ArgumentException($@"The line
 
 {line}
 
@@ -104,7 +104,7 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
 
                 for (var count = 0; count < str.Length; count++)
                 {
-                    if (str[count] != ' ') return count;
+                    if (!char.IsWhiteSpace(str[count])) return count;
                 }
 
                 return int.MaxValue;
@@ -112,9 +112,14 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
 
             var leadingWhitespaceCount = currentSnippet.Select(GetWhitespaceCount).Min();
 
-            return currentSnippet
+            var snippetGrossLines = currentSnippet
                 .Select(line => leadingWhitespaceCount >= line.Length ? "" : line.Substring(leadingWhitespaceCount))
-                .ToArray();
+                .Select(line => line.TrimEnd())
+                .ToList();
+
+            return snippetGrossLines.TrimEmptyStartLines()
+                .Reverse().TrimEmptyStartLines()
+                .Reverse().ToArray();
         }
     }
 }
