@@ -18,7 +18,9 @@ namespace Snipippety
 
         static IEnumerable<string> Process(string line, ReplacerContext context)
         {
-            if (!line.StartsWith("///"))
+            const string snippetIntro = "////";
+
+            if (!line.StartsWith(snippetIntro))
             {
                 yield return line;
                 yield break;
@@ -26,7 +28,7 @@ namespace Snipippety
 
             yield return "```csharp";
 
-            var snippetLines = ReadSnippetLines(line.Substring(3), context);
+            var snippetLines = ReadSnippetLines(line.Substring(snippetIntro.Length), context);
 
             foreach (var snippetLine in snippetLines)
             {

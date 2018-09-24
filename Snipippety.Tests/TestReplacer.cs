@@ -27,7 +27,7 @@ namespace Snipippety.Tests
         {
             const string input = @"Her er noget tekst
 
-/// snippet1.cs / bl1
+//// snippet1.cs / bl1
 
 Her er noget mere tekst";
             var context = new ReplacerContext(Path.Combine(AppContext.BaseDirectory, "Testdata", "Simple"));
@@ -51,6 +51,54 @@ Console.WriteLine(""Hej med dig min ven"");
 ```
 
 Her er noget mere tekst"));
+        }
+
+        [Test]
+        public void CanPerformMultipleReplacements_SameKey()
+        {
+            const string input = @"Her er første linje.
+
+//// snippet1.cs / bl1
+
+Her er tekst.
+
+//// snippet1.cs / bl1
+
+Her er mere tekst.
+";
+
+            var context = new ReplacerContext(Path.Combine(AppContext.BaseDirectory, "Testdata", "Simple"));
+            
+            var output = _replacer.Replace(input, context);
+
+            Console.WriteLine($@"{input}
+
+=>
+
+{output}");
+
+            Assert.That(output, Is.EqualTo(@"Her er første linje.
+
+```csharp
+int a = 2;
+
+    var b = 3;
+
+Console.WriteLine(""Hej med dig min ven"");
+```
+
+Her er tekst.
+
+```csharp
+int a = 2;
+
+    var b = 3;
+
+Console.WriteLine(""Hej med dig min ven"");
+```
+
+Her er mere tekst.
+"));
         }
     }
 }
