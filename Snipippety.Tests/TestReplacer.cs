@@ -100,5 +100,45 @@ Console.WriteLine(""Hej med dig min ven"");
 Her er mere tekst.
 "));
         }
+
+        [Test]
+        public void CanPerformMultipleReplacements_DifferentKeys()
+        {
+            const string input = @"Her er første linje.
+
+//// snippet2.cs / bl1
+
+Her er tekst.
+
+//// snippet2.cs / bl2
+
+Her er mere tekst.
+";
+
+            var context = new ReplacerContext(Path.Combine(AppContext.BaseDirectory, "Testdata", "Simple"));
+            
+            var output = _replacer.Replace(input, context);
+
+            Console.WriteLine($@"{input}
+
+=>
+
+{output}");
+
+            Assert.That(output, Is.EqualTo(@"Her er første linje.
+
+```csharp
+Console.WriteLine(""hej1"");
+```
+
+Her er tekst.
+
+```csharp
+Console.WriteLine(""hej2"");
+```
+
+Her er mere tekst.
+"));
+        }
     }
 }

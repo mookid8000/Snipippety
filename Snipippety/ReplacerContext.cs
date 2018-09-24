@@ -84,6 +84,7 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
                         snippets[snippetName] = GetSnippet(currentSnippet);
                         currentSnippet.Clear();
                         readingSnippet = false;
+                        continue;
                     }
 
                     currentSnippet.Add(line);
