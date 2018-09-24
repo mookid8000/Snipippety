@@ -9,26 +9,31 @@ namespace Snipippety
 {
     public class ReplacerContext
     {
-        readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string[]>> _snippetCache = new ConcurrentDictionary<string, ConcurrentDictionary<string, string[]>>();
+        readonly ConcurrentDictionary<string, SnippetFile> _snippetCache = new ConcurrentDictionary<string, SnippetFile>();
         readonly string _directory;
 
         public ReplacerContext(string directory = null)
         {
             _directory = directory ?? AppContext.BaseDirectory;
+
+            if (!Directory.Exists(_directory))
+            {
+                throw new ArgumentException($"Could not find snippet directory {_directory}");
+            }
         }
 
-        public IEnumerable<string> GetSnippet(string fileName, string snippetName) => _snippetCache.GetOrAdd(fileName, ReadSnippets)
-            .TryGetValue(snippetName, out var lines)
-            ? lines
-            : throw new ArgumentException($"Could not find snippet named {snippetName} in {fileName}");
+        public IEnumerable<string> GetSnippet(string fileName, string snippetName)
+        {
+            return _snippetCache.GetOrAdd(fileName, ReadSnippets).GetSnippet(snippetName);
+        }
 
-        ConcurrentDictionary<string, string[]> ReadSnippets(string fileName)
+        SnippetFile ReadSnippets(string fileName)
         {
             var filePath = Path.Combine(_directory, fileName);
 
             if (!File.Exists(filePath))
             {
-                throw new IOException($"Could not find snippet file {fileName} in {_directory}");
+                return SnippetFile.Error($"Could not find snippet file {fileName} in {_directory}");
             }
 
             var snippets = new ConcurrentDictionary<string, string[]>();
@@ -91,7 +96,7 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
                 }
             }
 
-            return snippets;
+            return SnippetFile.Ok(filePath, snippets);
         }
 
         static string[] GetSnippet(List<string> currentSnippet)
@@ -120,6 +125,35 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
             return snippetGrossLines.TrimEmptyStartLines()
                 .Reverse().TrimEmptyStartLines()
                 .Reverse().ToArray();
+        }
+
+        class SnippetFile
+        {
+            public static SnippetFile Ok(string filePath, ConcurrentDictionary<string, string[]> snippets) => new SnippetFile(filePath, snippets, "");
+
+            public static SnippetFile Error(string errorMessage) => new SnippetFile(null, null, errorMessage);
+
+            public bool IsOk => Snippets != null;
+
+            public string FilePath { get; }
+            public ConcurrentDictionary<string, string[]> Snippets { get; }
+            public string ErrorMessage { get; }
+
+            SnippetFile(string filePath, ConcurrentDictionary<string, string[]> snippets, string errorMessage)
+            {
+                FilePath = filePath;
+                Snippets = snippets;
+                ErrorMessage = errorMessage;
+            }
+
+            public IEnumerable<string> GetSnippet(string snippetName)
+            {
+                if (!IsOk) return new[] { ErrorMessage };
+
+                return Snippets.TryGetValue(snippetName, out var lines)
+                    ? lines
+                    : new[] {$"Could not find snippet '{snippetName}' in {FilePath}"};
+            }
         }
     }
 }

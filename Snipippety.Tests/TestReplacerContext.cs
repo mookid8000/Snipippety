@@ -9,6 +9,33 @@ namespace Snipippety.Tests
     public class TestReplacerContext
     {
         [Test]
+        public void GetsNiceErrorTextWhenSnippetCannotBeFound_FileNotFound()
+        {
+            var context = new ReplacerContext();
+            var lines = context.GetSnippet("file-does-not.exist.cs", "snippet-name");
+
+            var text = string.Join(Environment.NewLine, lines);
+
+            Console.WriteLine(text);
+
+            Assert.That(text, Is.EqualTo("Could not find snippet file file-does-not.exist.cs in C:\\projects\\Snipippety\\Snipippety.Tests\\bin\\Debug\\netcoreapp2.1\\"));
+        }
+
+        [Test]
+        public void GetsNiceErrorTextWhenSnippetCannotBeFound_SnippetNameDoesNotExist()
+        {
+            var context = new ReplacerContext(Path.Combine(AppContext.BaseDirectory, "Testdata", "Simple"));
+            var lines = context.GetSnippet(Path.Combine("Snippet1.cs"), "nonexistent-snippet-name");
+
+            var text = string.Join(Environment.NewLine, lines);
+
+            Console.WriteLine(text);
+
+            Assert.That(text, Contains.Substring("Could not find snippet 'nonexistent-snippet-name' in"));
+            Assert.That(text, Contains.Substring("Snippet1.cs"));
+        }
+
+        [Test]
         public void CanParseFile()
         {
             var context = new ReplacerContext(Path.Combine(AppContext.BaseDirectory, "Testdata", "Simple"));
