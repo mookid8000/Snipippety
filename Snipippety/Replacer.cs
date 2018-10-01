@@ -43,7 +43,7 @@ namespace Snipippety
 
         static IEnumerable<string> ReadSnippetLines(string line, ReplacerContext context)
         {
-            var tokens = line.Split('/').Select(token => token.Trim()).ToArray();
+            var tokens = line.Split(':').Select(token => token.Trim()).ToArray();
             var fileName = tokens.First();
             var extension = Path.GetExtension(fileName).ToLowerInvariant();
 

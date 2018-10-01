@@ -24,7 +24,7 @@ namespace Snipippety
 
         public IEnumerable<string> GetSnippet(string fileName, IEnumerable<string> snippetName)
         {
-            return _snippetCache.GetOrAdd(fileName, ReadSnippets).GetSnippet(snippetName.First());
+            return _snippetCache.GetOrAdd(fileName, ReadSnippets).GetSnippet(string.Join("/", snippetName));
         }
 
         public IEnumerable<string> ReadLines(string fileName) => ReadAllLines(GetFilePath(fileName));

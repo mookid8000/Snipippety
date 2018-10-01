@@ -27,7 +27,7 @@ namespace Snipippety.Tests
         {
             const string input = @"Her er noget tekst
 
-//// snippet1.cs / bl1
+//// snippet1.cs : bl1
 
 Her er noget mere tekst";
             var context = new ReplacerContext(Path.Combine(AppContext.BaseDirectory, "Testdata", "Simple"));
@@ -58,11 +58,11 @@ Her er noget mere tekst"));
         {
             const string input = @"Her er første linje.
 
-//// snippet1.cs / bl1
+//// snippet1.cs : bl1
 
 Her er tekst.
 
-//// snippet1.cs / bl1
+//// snippet1.cs : bl1
 
 Her er mere tekst.
 ";
@@ -106,11 +106,11 @@ Her er mere tekst.
         {
             const string input = @"Her er første linje.
 
-//// snippet2.cs / bl1
+//// snippet2.cs : bl1
 
 Her er tekst.
 
-//// snippet2.cs / bl2
+//// snippet2.cs : bl2
 
 Her er mere tekst.
 ";

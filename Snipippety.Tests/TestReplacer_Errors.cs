@@ -43,7 +43,7 @@ Efter."));
         {
             var input = @"Før
 
-//// findes-ikke.cs / whatever
+//// findes-ikke.cs : whatever
 
 Efter.";
 
