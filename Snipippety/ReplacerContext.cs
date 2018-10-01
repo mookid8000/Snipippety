@@ -99,15 +99,32 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
         {
             try
             {
-                Console.Write($" - reading {filePath} - ");
-                var lines = File.ReadAllLines(filePath, Encoding.UTF8);
-                Console.WriteLine("OK");
-                return lines;
+                try
+                {
+                    Console.Write($" - reading {filePath} - ");
+                    var lines = File.ReadAllLines(filePath, Encoding.UTF8);
+                    Console.WriteLine("OK");
+                    return lines;
+                }
+                catch (FileNotFoundException)
+                {
+                    Console.WriteLine("Not found");
+                    return new[] {$"Could not find file {filePath}"};
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    Console.WriteLine("Not found");
+                    return new[] {$"Could not find directory {Path.GetDirectoryName(filePath)} with file {filePath}"};
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Error");
+                    throw;
+                }
             }
-            catch (FileNotFoundException)
+            catch (Exception exception)
             {
-                Console.WriteLine("Not found");
-                return new[] {$"Could not find file {filePath}"};
+                return new[] {$"Unhandled exception when reading {filePath}: {exception}"};
             }
         }
 
@@ -166,7 +183,7 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
 
                 return Snippets.TryGetValue(snippetName, out var lines)
                     ? lines
-                    : new[] {$"Could not find snippet '{snippetName}' in {FilePath}"};
+                    : new[] { $"Could not find snippet '{snippetName}' in {FilePath}" };
             }
         }
     }

@@ -15,6 +15,26 @@ namespace Snipippety.Tests
         }
 
         [Test]
+        public void WhackException()
+        {
+            var input = @"Før
+
+//// findes-ikke.md / crazy format : helt mystisk
+
+Efter.";
+
+            var output = _replacer.Replace(input, GetContext());
+
+            Console.WriteLine($@"{input}
+
+=>
+
+{output}");
+
+            
+        }
+
+        [Test]
         public void DoesNotDieWhenIncludeFileCannotBeFound()
         {
             var input = @"Før
