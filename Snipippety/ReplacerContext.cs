@@ -32,12 +32,6 @@ namespace Snipippety
         SnippetFile ReadSnippets(string fileName)
         {
             var filePath = GetFilePath(fileName);
-
-            if (!File.Exists(filePath))
-            {
-                return SnippetFile.Error($"Could not find snippet file {fileName} in {_directory}");
-            }
-
             var lines = ReadAllLines(filePath);
 
             var snippets = new ConcurrentDictionary<string, string[]>();
@@ -101,18 +95,21 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
             return SnippetFile.Ok(filePath, snippets);
         }
 
-        static string[] ReadAllLines(string filePath)
+        static IEnumerable<string> ReadAllLines(string filePath)
         {
-            return File.ReadAllLines(filePath, Encoding.UTF8);
+            try
+            {
+                return File.ReadAllLines(filePath, Encoding.UTF8);
+            }
+            catch (FileNotFoundException)
+            {
+                return new[] {$"Could not find file {filePath}"};
+            }
         }
 
-        string GetFilePath(string fileName)
-        {
-            var filePath = Path.Combine(_directory, fileName);
-            return filePath;
-        }
+        string GetFilePath(string fileName) => Path.Combine(_directory, fileName);
 
-        static string[] GetSnippet(List<string> currentSnippet)
+        static string[] GetSnippet(IReadOnlyCollection<string> currentSnippet)
         {
             if (currentSnippet.Count == 0) return new string[0];
 

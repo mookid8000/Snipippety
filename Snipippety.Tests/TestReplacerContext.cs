@@ -18,7 +18,7 @@ namespace Snipippety.Tests
 
             Console.WriteLine(text);
 
-            Assert.That(text, Is.EqualTo("Could not find snippet file file-does-not.exist.cs in C:\\projects\\Snipippety\\Snipippety.Tests\\bin\\Debug\\netcoreapp2.1\\"));
+            Assert.That(text, Is.EqualTo("Could not find snippet \'snippet-name\' in C:\\projects\\Snipippety\\Snipippety.Tests\\bin\\Debug\\netcoreapp2.1\\file-does-not.exist.cs"));
         }
 
         [Test]
