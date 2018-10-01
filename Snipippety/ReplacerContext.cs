@@ -99,10 +99,14 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
         {
             try
             {
-                return File.ReadAllLines(filePath, Encoding.UTF8);
+                Console.Write($" - reading {filePath} - ");
+                var lines = File.ReadAllLines(filePath, Encoding.UTF8);
+                Console.WriteLine("OK");
+                return lines;
             }
             catch (FileNotFoundException)
             {
+                Console.WriteLine("Not found");
                 return new[] {$"Could not find file {filePath}"};
             }
         }
