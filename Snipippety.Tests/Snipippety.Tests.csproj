@@ -6,10 +6,18 @@
 
   <ItemGroup>
     <Compile Remove="Testdata\Simple\DoesNotCompile.cs" />
+    <Compile Remove="Testdata\Simple\Snippet1.cs" />
+    <Compile Remove="Testdata\Simple\Snippet2.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Testdata\Simple\DoesNotCompile.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Testdata\Simple\Snippet1.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Testdata\Simple\Snippet2.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -25,12 +33,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Testdata\Simple\Snippet2.cs">
+    <None Update="Testdata\Includes\include2.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Update="Testdata\Simple\Snippet1.cs">
+    </None>
+    <None Update="Testdata\Includes\include3.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
+    </None>
+    <None Update="Testdata\Includes\include1.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

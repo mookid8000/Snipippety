@@ -7,13 +7,20 @@ namespace Snipippety
 {
     public class Replacer
     {
+        static readonly string[] CodeFileExtensions = { ".cs" };
+        static readonly string[] LiteralIncludeFileExtension = {".md"};
+        static readonly string LineSeparator = Environment.NewLine;
+
         public string Replace(string input, ReplacerContext context)
         {
-            var lineSeparator = Environment.NewLine;
+            var lines = input.Split(new[] { LineSeparator }, StringSplitOptions.None);
 
-            var lines = input.Split(new[] {lineSeparator}, StringSplitOptions.None);
+            return string.Join(LineSeparator, ProcessLines(context, lines));
+        }
 
-            return string.Join(lineSeparator, lines.SelectMany(line => Process(line, context)));
+        static IEnumerable<string> ProcessLines(ReplacerContext context, string[] lines)
+        {
+            return lines.SelectMany(line => Process(line, context));
         }
 
         static IEnumerable<string> Process(string line, ReplacerContext context)
@@ -26,28 +33,42 @@ namespace Snipippety
                 yield break;
             }
 
-            yield return "```csharp";
-
             var snippetLines = ReadSnippetLines(line.Substring(snippetIntro.Length), context);
 
             foreach (var snippetLine in snippetLines)
             {
                 yield return snippetLine;
             }
-
-            yield return "```";
         }
 
         static IEnumerable<string> ReadSnippetLines(string line, ReplacerContext context)
         {
             var tokens = line.Split('/').Select(token => token.Trim()).ToArray();
+            var fileName = tokens.First();
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
 
-            if (tokens.Length != 2)
+            if (LiteralIncludeFileExtension.Contains(extension))
             {
-                throw new FormatException($"Could not extract <filename>/<snippet-name> pair from '{line}'");
+                var expandedSnippetLines = context.ReadLines(fileName).ToArray();
+
+                foreach (var expandedSnippetLine in ProcessLines(context, expandedSnippetLines))
+                {
+                    yield return expandedSnippetLine;
+                }
+
+                yield break;
             }
 
-            return context.GetSnippet(tokens[0], tokens[1]);
+            if (CodeFileExtensions.Contains(extension)) yield return "```csharp";
+
+            var snippetLines = context.GetSnippet(fileName, tokens.Skip(1));
+
+            foreach (var snippetLine in snippetLines)
+            {
+                yield return snippetLine;
+            }
+
+            if (CodeFileExtensions.Contains(extension)) yield return "```";
         }
     }
 }

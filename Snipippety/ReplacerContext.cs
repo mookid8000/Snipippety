@@ -22,27 +22,29 @@ namespace Snipippety
             }
         }
 
-        public IEnumerable<string> GetSnippet(string fileName, string snippetName)
+        public IEnumerable<string> GetSnippet(string fileName, IEnumerable<string> snippetName)
         {
-            return _snippetCache.GetOrAdd(fileName, ReadSnippets).GetSnippet(snippetName);
+            return _snippetCache.GetOrAdd(fileName, ReadSnippets).GetSnippet(snippetName.First());
         }
+
+        public IEnumerable<string> ReadLines(string fileName) => ReadAllLines(GetFilePath(fileName));
 
         SnippetFile ReadSnippets(string fileName)
         {
-            var filePath = Path.Combine(_directory, fileName);
+            var filePath = GetFilePath(fileName);
 
             if (!File.Exists(filePath))
             {
                 return SnippetFile.Error($"Could not find snippet file {fileName} in {_directory}");
             }
 
+            var lines = ReadAllLines(filePath);
+
             var snippets = new ConcurrentDictionary<string, string[]>();
             var readingSnippet = false;
             var snippetName = "";
             var currentSnippet = new List<string>();
             var snippetBlockFoundAtIndentationLevel = 0;
-
-            var lines = File.ReadAllLines(filePath, Encoding.UTF8);
 
             foreach (var line in lines)
             {
@@ -97,6 +99,17 @@ defines snippet with name '{snippetName}', but that snippet was already defined 
             }
 
             return SnippetFile.Ok(filePath, snippets);
+        }
+
+        static string[] ReadAllLines(string filePath)
+        {
+            return File.ReadAllLines(filePath, Encoding.UTF8);
+        }
+
+        string GetFilePath(string fileName)
+        {
+            var filePath = Path.Combine(_directory, fileName);
+            return filePath;
         }
 
         static string[] GetSnippet(List<string> currentSnippet)

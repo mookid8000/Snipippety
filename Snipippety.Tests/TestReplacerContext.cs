@@ -12,7 +12,7 @@ namespace Snipippety.Tests
         public void GetsNiceErrorTextWhenSnippetCannotBeFound_FileNotFound()
         {
             var context = new ReplacerContext();
-            var lines = context.GetSnippet("file-does-not.exist.cs", "snippet-name");
+            var lines = context.GetSnippet("file-does-not.exist.cs", new []{"snippet-name"});
 
             var text = string.Join(Environment.NewLine, lines);
 
@@ -25,7 +25,7 @@ namespace Snipippety.Tests
         public void GetsNiceErrorTextWhenSnippetCannotBeFound_SnippetNameDoesNotExist()
         {
             var context = new ReplacerContext(Path.Combine(AppContext.BaseDirectory, "Testdata", "Simple"));
-            var lines = context.GetSnippet(Path.Combine("Snippet1.cs"), "nonexistent-snippet-name");
+            var lines = context.GetSnippet(Path.Combine("Snippet1.cs"), new []{"nonexistent-snippet-name"});
 
             var text = string.Join(Environment.NewLine, lines);
 
@@ -40,7 +40,7 @@ namespace Snipippety.Tests
         {
             var context = new ReplacerContext(Path.Combine(AppContext.BaseDirectory, "Testdata", "Simple"));
 
-            var snippet = context.GetSnippet("DoesNotCompile.cs", "relistic examples").ToArray();
+            var snippet = context.GetSnippet("DoesNotCompile.cs", new[]{"relistic examples"}).ToArray();
 
             var fullText = string.Join(Environment.NewLine, snippet);
             

@@ -5,11 +5,11 @@ using NUnit.Framework;
 namespace Snipippety.Tests
 {
     [TestFixture]
-    public class TestReplacer 
+    public class TestReplacer_Snippets 
     {
         Replacer _replacer;
 
-        public TestReplacer()
+        public TestReplacer_Snippets()
         {
             _replacer = new Replacer();
         }
