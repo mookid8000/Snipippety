@@ -2,11 +2,12 @@
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
+using Testy;
 
 namespace Snipippety.Tests
 {
     [TestFixture]
-    public class TestReplacerContext
+    public class TestReplacerContext : FixtureBase
     {
         [Test]
         public void GetsNiceErrorTextWhenSnippetCannotBeFound_FileNotFound()
@@ -18,7 +19,7 @@ namespace Snipippety.Tests
 
             Console.WriteLine(text);
 
-            Assert.That(text, Is.EqualTo("Could not find snippet \'snippet-name\' in C:\\projects\\Snipippety\\Snipippety.Tests\\bin\\Debug\\netcoreapp2.1\\file-does-not.exist.cs"));
+            Assert.That(text, Is.EqualTo("Could not find snippet \'snippet-name\' in C:\\projects-rebusfm\\Snipippety\\Snipippety.Tests\\bin\\Debug\\net6.0\\file-does-not.exist.cs"));
         }
 
         [Test]

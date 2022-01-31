@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
+using Testy;
 
 namespace Snipippety.Tests
 {
     [TestFixture]
-    public class TestReplacer_Errors
+    public class TestReplacer_Errors : FixtureBase
     {
         Replacer _replacer;
 
@@ -31,7 +32,7 @@ Efter.";
 
 {output}");
 
-            
+
         }
 
         [Test]
@@ -53,7 +54,7 @@ Efter.";
 
             Assert.That(output, Is.EqualTo(@"Før
 
-Could not find file C:\projects\Snipippety\Snipippety.Tests\bin\Debug\netcoreapp2.1\findes-ikke.md
+Could not find file C:\projects-rebusfm\Snipippety\Snipippety.Tests\bin\Debug\net6.0\findes-ikke.md
 
 Efter."));
         }
@@ -78,7 +79,7 @@ Efter.";
             Assert.That(output, Is.EqualTo(@"Før
 
 ```csharp
-Could not find snippet 'whatever' in C:\projects\Snipippety\Snipippety.Tests\bin\Debug\netcoreapp2.1\findes-ikke.cs
+Could not find snippet 'whatever' in C:\projects-rebusfm\Snipippety\Snipippety.Tests\bin\Debug\net6.0\findes-ikke.cs
 ```
 
 Efter."));

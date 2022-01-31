@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
+using Testy;
 
 namespace Snipippety.Tests
 {
     [TestFixture]
-    public class TestReplacer_MultipleIncludes
+    public class TestReplacer_MultipleIncludes : FixtureBase
     {
         Replacer _replacer;
 
